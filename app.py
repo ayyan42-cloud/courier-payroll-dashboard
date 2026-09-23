@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from google_sheets import load_data, upsert_rows
+from google_sheets and XLSX import load_data, upsert_rows
 from payslip import render_payslip
 
 st.set_page_config(page_title="Courier Payroll Dashboard", page_icon="🚴", layout="wide")
