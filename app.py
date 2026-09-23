@@ -46,7 +46,6 @@ authenticator = stauth.Authenticate(
     config["cookie"]["expiry_days"],
     auto_hash=False,
 )
-)
 
 # Handle login
 authenticator.login("main")
