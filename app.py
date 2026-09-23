@@ -29,6 +29,7 @@ st.markdown("""
 # ── Authentication ───────────────────────────────────────────
 # Load auth config from Streamlit Secrets instead of a file
 # Load auth config from Streamlit Secrets and convert to a normal editable dictionary
+# Load auth config from Streamlit Secrets
 if "credentials" in st.secrets:
     config = {
         "credentials": {"usernames": {}},
@@ -39,9 +40,24 @@ if "credentials" in st.secrets:
 else:
     st.error("Authentication secrets are missing!")
     st.stop()
-    }
-else:
-    st.error("Authentication secrets are missing! Please check your Secrets settings.")
+
+# Set up the authenticator
+authenticator = stauth.Authenticate(
+    config["credentials"],
+    config["cookie"]["name"],
+    config["cookie"]["key"],
+    config["cookie"]["expiry_days"],
+    auto_hash=False,
+)
+
+# Handle login
+authenticator.login("main")
+name = st.session_state.get("name")
+auth_status = st.session_state.get("authentication_status")
+username = st.session_state.get("username")
+
+if not auth_status:
+    st.warning("Please log in to access the payroll dashboard.")
     st.stop()
 
 authenticator = stauth.Authenticate(
