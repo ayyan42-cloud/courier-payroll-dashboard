@@ -27,8 +27,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Authentication ───────────────────────────────────────────
-# Load auth config from Streamlit Secrets instead of a file
-# Load auth config from Streamlit Secrets and convert to a normal editable dictionary
 # Load auth config from Streamlit Secrets
 if "credentials" in st.secrets:
     config = {
@@ -41,13 +39,13 @@ else:
     st.error("Authentication secrets are missing!")
     st.stop()
 
-# Set up the authenticator
 authenticator = stauth.Authenticate(
     config["credentials"],
     config["cookie"]["name"],
     config["cookie"]["key"],
     config["cookie"]["expiry_days"],
     auto_hash=False,
+)
 )
 
 # Handle login
