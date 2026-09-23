@@ -27,11 +27,28 @@ def load_data(sheet_name="CourierPayroll"):
     data = ws.get_all_records()
     return pd.DataFrame(data)
 
-def upsert_rows(df_new, sheet_name="CourierPayroll"):
+def def upsert_rows(df_new, sheet_name="CourierPayroll"):
     """Append new months, update existing Rider+Month in place."""
     client = get_client()
     sh = client.open(sheet_name)
     ws = sh.sheet1
+
+    # --- SMART COLUMN FIXER ---
+    # Strip spaces and fix common capitalization mistakes
+    df_new.columns = [c.strip() for c in df_new.columns]
+    rename_map = {}
+    for col in df_new.columns:
+        if col.lower() == "courier id": rename_map[col] = "courier ID"
+        elif col.lower() == "courier name": rename_map[col] = "courier name"
+        elif col.lower() == "pay month": rename_map[col] = "pay month"
+    df_new.rename(columns=rename_map, inplace=True)
+
+    # Check if required columns exist before proceeding
+    if "courier ID" not in df_new.columns:
+        raise ValueError(f"Missing column 'courier ID'. Your columns are: {list(df_new.columns)}")
+    if "pay month" not in df_new.columns:
+        raise ValueError(f"Missing column 'pay month'. Your columns are: {list(df_new.columns)}")
+    # --------------------------
 
     existing = pd.DataFrame(ws.get_all_records())
     headers = ws.row_values(1)
@@ -55,6 +72,10 @@ def upsert_rows(df_new, sheet_name="CourierPayroll"):
             for col_idx, h in enumerate(headers, start=1):
                 ws.update_cell(row_num, col_idx, row.get(h, ""))
 
+    if new_rows:
+        ws.append_rows(new_rows, value_input_option="USER_ENTERED")
+
+    return len(new_rows)
     if new_rows:
         ws.append_rows(new_rows, value_input_option="USER_ENTERED")
 
