@@ -1,0 +1,10 @@
+streamlit
+streamlit-authenticator
+plotly
+pandas
+openpyxl
+gspread
+google-auth
+google-auth-oauthlib
+PyYAML
+bcrypt
