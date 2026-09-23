@@ -44,7 +44,10 @@ authenticator = stauth.Authenticate(
     config["cookie"]["expiry_days"],
 )
 
-name, auth_status, username = authenticator.login("main")
+authenticator.login("main")
+name = st.session_state.get("name")
+auth_status = st.session_state.get("authentication_status")
+username = st.session_state.get("username")
 
 if not auth_status:
     st.warning("Please log in to access the payroll dashboard.")
