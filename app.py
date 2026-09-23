@@ -27,8 +27,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Authentication ───────────────────────────────────────────
-with open("auth_config.yaml") as f:
-    config = yaml.load(f, Loader=SafeLoader)
+# Load auth config from Streamlit Secrets instead of a file
+if "credentials" in st.secrets:
+    config = {
+        "credentials": dict(st.secrets["credentials"]),
+        "cookie": dict(st.secrets["cookie"])
+    }
+else:
+    st.error("Authentication secrets are missing! Please check your Secrets settings.")
+    st.stop()
 
 authenticator = stauth.Authenticate(
     config["credentials"],
