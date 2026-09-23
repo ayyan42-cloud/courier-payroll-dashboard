@@ -28,10 +28,14 @@ st.markdown("""
 
 # ── Authentication ───────────────────────────────────────────
 # Load auth config from Streamlit Secrets instead of a file
+import json
+
 if "credentials" in st.secrets:
+    # This deeply converts the read-only Secrets object into a fully editable dictionary
+    secrets_dict = json.loads(json.dumps(dict(st.secrets)))
     config = {
-        "credentials": dict(st.secrets["credentials"]),
-        "cookie": dict(st.secrets["cookie"])
+        "credentials": secrets_dict["credentials"],
+        "cookie": secrets_dict["cookie"]
     }
 else:
     st.error("Authentication secrets are missing! Please check your Secrets settings.")
